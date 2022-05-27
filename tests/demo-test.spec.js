@@ -7,5 +7,5 @@ test.beforeEach(async ({ page }) =>{
 });
 
 test('verify the logo is present', async ({ page }) => {
-await expect(page.locator('#navag')).toBeVisible();
+await expect(page.locator('#nava')).toBeVisible();
 });
