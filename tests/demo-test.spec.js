@@ -13,7 +13,7 @@ const { test, expect } = require ('@playwright/test');
 const users = {
     existingUsername: "jjabrams",
     existingPassword: "ruinedstarwars",
-    newUsername: "somehow1988",
+    newUsername: "somehow19899",
     newPassword: "palpatinereturned"
 };
 
@@ -38,41 +38,45 @@ test.beforeEach(async ({ page }) =>{
 
 
 test('verify the logo is present', async ({ page }) => {
-await expect(page.locator(navlogo)).toBeVisible();
+await expect(page.locator(selectors.navlogo)).toBeVisible();
 });
 
 test.describe('Sign Up Tests', () => {
     test('sign up for a new account', async ({ page }) => {
         // Click on signup button
-        await page.locator(signup).click();
+        await page.locator(selectors.signup).click();
         // Fill in username
-        await page.locator(signupUsernameField).fill(newUsername);
+        await page.locator(selectors.signupUsernameField).fill(users.newUsername);
         // Fill in password
-        await page.locator(signingPasswordField).fill(newPassword);
+        await page.locator(selectors.signingPasswordField).fill(users.newPassword);
         // Click sign-up
-        await page.locator(signupConfirm).click();
+        await page.locator(selectors.signupConfirm).click();
         // If sign up is successful, then pop-up will be dismissed
-        await expect(page.locator('#signInModal > div > div')).toBeHidden();
+        page.once('dialog', dialog => {
+            expect(dialog.message()).toBe('Sign up successful')
+            dialog.dismiss().catch(() => {});
+        });
+        await expect(page.locator('#signInModal > div > div')).not.toBeVisible();
     });
 });
 
 test.describe('Log in Tests', () => {
     test('log in with existing account', async ({ page }) => {
-        await page.locator(login).click();
-        await page.locator(loginUsernameField).fill(existingUsername);
-        await page.locator(loginPasswordField).fill(existingPassword);
-        await page.locator(loginConfirm).click();
-        await expect(page.locator('#nameofuser')).toContainText('Welcome '+ existingUsername);
+        await page.locator(selectors.login).click();
+        await page.locator(selectors.loginUsernameField).fill(users.existingUsername);
+        await page.locator(selectors.loginPasswordField).fill(users.existingPassword);
+        await page.locator(selectors.loginConfirm).click();
+        await expect(page.locator('#nameofuser')).toContainText('Welcome '+ users.existingUsername);
     })
 })
 
 test.describe('Log out tests', () => {
     test('log out with existing account', async ({ page }) => {
-        await page.locator(login).click();
-        await page.locator(loginUsernameField).fill(existingUsername);
-        await page.locator(loginPasswordField).fill(existingPassword);
-        await page.locator(loginConfirm).click();
-        await page.locator(logout).click();
-        await expect(page.locator(login)).toContainText('Log In');
+        await page.locator(selectors.login).click();
+        await page.locator(selectors.loginUsernameField).fill(users.existingUsername);
+        await page.locator(selectors.loginPasswordField).fill(users.existingPassword);
+        await page.locator(selectors.loginConfirm).click();
+        await page.locator(selectors.logout).click();
+        await expect(page.locator(selectors.login)).toContainText('Log in');
     })
 })
