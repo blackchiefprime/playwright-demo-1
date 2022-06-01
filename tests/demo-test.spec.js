@@ -9,20 +9,16 @@
 //Error Handling Tests
 
 const { test, expect } = require ('@playwright/test');
+import { signupModule } from './PageObjects/signupModule';
 
 const users = {
     existingUsername: "jjabrams",
     existingPassword: "ruinedstarwars",
-    newUsername: "somehow19899",
+    newUsername: "somehow198999",
     newPassword: "palpatinereturned"
 };
 
 const selectors = {
-    navlogo: '#nava',
-    signup: '#signin2',
-    signupUsernameField: '#sign-username',
-    signingPasswordField: '#sign-password',
-    signupConfirm: '#signInModal > div > div > div.modal-footer > button.btn.btn-primary',
     login: '#login2',
     loginUsernameField: '#loginusername',
     loginPasswordField: '#loginpassword',
@@ -43,7 +39,7 @@ await expect(page.locator(selectors.navlogo)).toBeVisible();
 
 test.describe('Sign Up Tests', () => {
     test('sign up for a new account', async ({ page }) => {
-        // Click on signup button
+        /*// Click on signup button
         await page.locator(selectors.signup).click();
         // Fill in username
         await page.locator(selectors.signupUsernameField).fill(users.newUsername);
@@ -51,7 +47,9 @@ test.describe('Sign Up Tests', () => {
         await page.locator(selectors.signingPasswordField).fill(users.newPassword);
         // Click sign-up
         await page.locator(selectors.signupConfirm).click();
-        // If sign up is successful, then pop-up will be dismissed
+        // If sign up is successful, then pop-up will be dismissed*/
+        const SignupModule = new signupModule(page);
+        await SignupModule.enterDetails(users.existingUsername, users.existingPassword);
         page.once('dialog', dialog => {
             expect(dialog.message()).toBe('Sign up successful')
             dialog.dismiss().catch(() => {});
