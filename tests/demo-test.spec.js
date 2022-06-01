@@ -9,12 +9,12 @@
 //Error Handling Tests
 
 const { test, expect } = require ('@playwright/test');
-import { signupModule } from './PageObjects/signupModule';
+const { SignUpObjects } = require ('./PageObjects/signupModule');
 
 const users = {
     existingUsername: "jjabrams",
     existingPassword: "ruinedstarwars",
-    newUsername: "somehow198999",
+    newUsername: "somehow19899911",
     newPassword: "palpatinereturned"
 };
 
@@ -39,19 +39,10 @@ await expect(page.locator(selectors.navlogo)).toBeVisible();
 
 test.describe('Sign Up Tests', () => {
     test('sign up for a new account', async ({ page }) => {
-        /*// Click on signup button
-        await page.locator(selectors.signup).click();
-        // Fill in username
-        await page.locator(selectors.signupUsernameField).fill(users.newUsername);
-        // Fill in password
-        await page.locator(selectors.signingPasswordField).fill(users.newPassword);
-        // Click sign-up
-        await page.locator(selectors.signupConfirm).click();
-        // If sign up is successful, then pop-up will be dismissed*/
-        const SignupModule = new signupModule(page);
-        await SignupModule.enterDetails(users.existingUsername, users.existingPassword);
+        const SignupModule = new SignUpObjects(page);
+        await SignupModule.enterDetails(users.newUsername, users.newPassword);
         page.once('dialog', dialog => {
-            expect(dialog.message()).toBe('Sign up successful')
+            expect(dialog.message()).toEqual('Sign up successful.')
             dialog.dismiss().catch(() => {});
         });
         await expect(page.locator('#signInModal > div > div')).not.toBeVisible();
