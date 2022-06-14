@@ -1,16 +1,16 @@
 const { expect, locator } = require('@playwright/test');
 
 exports.ContactObjects = class ContactObjects {
-    constructer(page){
+    constructor(page){
         this.page = page;
         this.contactButton = page.locator(".nav-link:has-text('Contact')");
-        this.contactCross = page.selector('#exampleModal > div > div > div.modal-header > button > span');
-        this.contactTitle = page.selector('#exampleModalLabel');
-        this.contactEmailField = page.selector('##recipient-email');
-        this.contactNameField = page.selector('#recipient-name');
-        this.contactMessage = page.selector('#message-text');
-        this.contactCloseButton = page.selector('#exampleModal > div > div > div.modal-footer > button.btn.btn-secondary');
-        this.contactSendMessage = page.selector('#exampleModal > div > div > div.modal-footer > button.btn.btn-primary')
+        this.contactCross = page.locator('#exampleModal > div > div > div.modal-header > button > span');
+        this.contactTitle = page.locator('#exampleModalLabel');
+        this.contactEmailField = page.locator('#recipient-email');
+        this.contactNameField = page.locator('#recipient-name');
+        this.contactMessage = page.locator('#message-text');
+        this.contactCloseButton = page.locator('#exampleModal > div > div > div.modal-footer > button.btn.btn-secondary');
+        this.contactSendMessage = page.locator('#exampleModal > div > div > div.modal-footer > button.btn.btn-primary')
     };
     async enterContactMessage(email, name, message)
     {
