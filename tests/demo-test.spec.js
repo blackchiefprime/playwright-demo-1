@@ -10,6 +10,7 @@
 
 const { test, expect } = require ('@playwright/test');
 const { SignUpObjects } = require ('./PageObjects/signupModule');
+const { ContactObjects } = require('./PageObjects/contactModule');
 
 const users = {
     existingUsername: "jjabrams",
@@ -17,6 +18,12 @@ const users = {
     newUsername: "somehow19899911",
     newPassword: "palpatinereturned"
 };
+
+const contactDetails = {
+    contactEmail: "jangofett@kaminoclones.com",
+    contactName: "Jango F",
+    contactMessage: "We pan down from the twin suns of Tatooine. We are now close on the mouth of the Sarlacc pit. After a beat, the gloved Mandalorian armor gauntlet of Boba Fett grabs onto the sand outside the Sarlacc pit, and the feared bounty hunter pulls himself from the maw of the sand beast.",
+}
 
 const selectors = {
     login: '#login2',
@@ -67,5 +74,12 @@ test.describe('Log out tests', () => {
         await page.locator(selectors.loginConfirm).click();
         await page.locator(selectors.logout).click();
         await expect(page.locator(selectors.login)).toContainText('Log in');
+    })
+})
+
+test.describe('Contact Us Tests', () => {
+    test('send a message in Contact Us', async ({ page }) => {
+        const ContactModule = new ContactObjects(page);
+        await ContactModule.enterContactMessage(contactDetails.contactEmail, contactDetails.contactName, contactDetails.contactMessage);
     })
 })

@@ -8,7 +8,7 @@ exports.SignUpObjects = class SignUpObjects {
         this.signupUsernameField = page.locator('#sign-username');
         this.signupPasswordField = page.locator('#sign-password');
         this.signupConfirm = page.locator('#signInModal > div > div > div.modal-footer > button.btn.btn-primary');
-    }
+    };
     async enterDetails(username, password)
     {
         await this.signup.click();
