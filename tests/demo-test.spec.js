@@ -9,53 +9,75 @@
 //Error Handling Tests
 
 const { test, expect } = require ('@playwright/test');
+const { SignUpObjects } = require ('./PageObjects/signupModule');
+const { ContactObjects } = require('./PageObjects/contactModule');
+const { loginObjects } = require('./PageObjects/loginModule');
+
+const users = {
+    existingUsername: "jjabrams",
+    existingPassword: "ruinedstarwars",
+    newUsername: "somehow1989991111",
+    newPassword: "palpatinereturned"
+};
+
+const contactDetails = {
+    contactEmail: "jangofett@kaminoclones.com",
+    contactName: "Jango F",
+    contactMessage: "We pan down from the twin suns of Tatooine. We are now close on the mouth of the Sarlacc pit. After a beat, the gloved Mandalorian armor gauntlet of Boba Fett grabs onto the sand outside the Sarlacc pit, and the feared bounty hunter pulls himself from the maw of the sand beast.",
+}
+
+const selectors = {
+    login: '#login2',
+    loginUsernameField: '#loginusername',
+    loginPasswordField: '#loginpassword',
+    loginConfirm: '#logInModal > div > div > div.modal-footer > button.btn.btn-primary',
+    logout: '#logout2'
+};
+
 
 test.beforeEach(async ({ page }) =>{
     await page.goto('https://www.demoblaze.com/index.html');
 });
 
-const existingUsername = 'jjabrams';
-const existingPassword = 'ruinedstarwars';
 
-const newUsername = 'somehow1988';
-const newPassword = 'palpatinereturned';
 
 test('verify the logo is present', async ({ page }) => {
-await expect(page.locator('#nava')).toBeVisible();
+    const SignupModule = new SignUpObjects(page);
+await expect(page.locator(SignupModule.navlogo)).toBeVisible();
 });
 
 test.describe('Sign Up Tests', () => {
     test('sign up for a new account', async ({ page }) => {
-        // Click on signup button
-        await page.locator('#signin2').click();
-        // Fill in username
-        await page.locator('#sign-username').fill(newUsername);
-        // Fill in password
-        await page.locator('#sign-password').fill(newPassword);
-        // Click sign-up
-        await page.locator('#signInModal > div > div > div.modal-footer > button.btn.btn-primary').click();
-        // If sign up is successful, then pop-up will be dismissed
-        await expect(page.locator('#signInModal > div > div')).toBeHidden();
+        const SignupModule = new SignUpObjects(page);
+        await SignupModule.enterDetails(users.newUsername, users.newPassword);
+        page.once('dialog', dialog => {
+            expect(dialog.message()).toEqual('Sign up successful.')
+            dialog.dismiss().catch(() => {});
+        });
+        await expect(page.locator('#signInModal > div > div')).not.toBeVisible();
     });
 });
 
 test.describe('Log in Tests', () => {
     test('log in with existing account', async ({ page }) => {
-        await page.locator('#login2').click();
-        await page.locator('#loginusername').fill(existingUsername);
-        await page.locator('#loginpassword').fill(existingPassword);
-        await page.locator('#logInModal > div > div > div.modal-footer > button.btn.btn-primary').click();
-        await expect(page.locator('#nameofuser')).toContainText('Welcome '+ existingUsername);
+        const LoginModule = new loginObjects(page);
+        await LoginModule.loginDetails(users.existingUsername, users.existingPassword);
+        await expect(page.locator('#nameofuser')).toContainText('Welcome '+ users.existingUsername);
     })
 })
 
 test.describe('Log out tests', () => {
     test('log out with existing account', async ({ page }) => {
-        await page.locator('#login2').click();
-        await page.locator('#loginusername').fill(existingUsername);
-        await page.locator('#loginpassword').fill(existingPassword);
-        await page.locator('#logInModal > div > div > div.modal-footer > button.btn.btn-primary').click();
-        await page.locator('#logout2').click();
-        await expect(page.locator('#login2')).toContainText('Log In');
+        const LoginModule = new loginObjects(page);
+        await LoginModule.loginDetails(users.existingUsername, users.existingPassword);
+        await LoginModule.logoutDetails();
+        await expect(page.locator(selectors.login)).toContainText('Log in');
+    })
+})
+
+test.describe('Contact Us Tests', () => {
+    test('send a message in Contact Us', async ({ page }) => {
+        const ContactModule = new ContactObjects(page);
+        await ContactModule.enterContactMessage(contactDetails.contactEmail, contactDetails.contactName, contactDetails.contactMessage);
     })
 })
