@@ -11,11 +11,12 @@
 const { test, expect } = require ('@playwright/test');
 const { SignUpObjects } = require ('./PageObjects/signupModule');
 const { ContactObjects } = require('./PageObjects/contactModule');
+const { loginObjects } = require('./PageObjects/loginModule');
 
 const users = {
     existingUsername: "jjabrams",
     existingPassword: "ruinedstarwars",
-    newUsername: "somehow19899911",
+    newUsername: "somehow1989991111",
     newPassword: "palpatinereturned"
 };
 
@@ -41,7 +42,8 @@ test.beforeEach(async ({ page }) =>{
 
 
 test('verify the logo is present', async ({ page }) => {
-await expect(page.locator(selectors.navlogo)).toBeVisible();
+    const SignupModule = new SignUpObjects(page);
+await expect(page.locator(SignupModule.navlogo)).toBeVisible();
 });
 
 test.describe('Sign Up Tests', () => {
@@ -58,21 +60,17 @@ test.describe('Sign Up Tests', () => {
 
 test.describe('Log in Tests', () => {
     test('log in with existing account', async ({ page }) => {
-        await page.locator(selectors.login).click();
-        await page.locator(selectors.loginUsernameField).fill(users.existingUsername);
-        await page.locator(selectors.loginPasswordField).fill(users.existingPassword);
-        await page.locator(selectors.loginConfirm).click();
+        const LoginModule = new loginObjects(page);
+        await LoginModule.loginDetails(users.existingUsername, users.existingPassword);
         await expect(page.locator('#nameofuser')).toContainText('Welcome '+ users.existingUsername);
     })
 })
 
 test.describe('Log out tests', () => {
     test('log out with existing account', async ({ page }) => {
-        await page.locator(selectors.login).click();
-        await page.locator(selectors.loginUsernameField).fill(users.existingUsername);
-        await page.locator(selectors.loginPasswordField).fill(users.existingPassword);
-        await page.locator(selectors.loginConfirm).click();
-        await page.locator(selectors.logout).click();
+        const LoginModule = new loginObjects(page);
+        await LoginModule.loginDetails(users.existingUsername, users.existingPassword);
+        await LoginModule.logoutDetails();
         await expect(page.locator(selectors.login)).toContainText('Log in');
     })
 })
